@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:11-alpine
+    environment:
+      POSTGRES_DB: denodo
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: root
+    logging:
+      driver: "none"
+    restart: unless-stopped
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+  denodo:
+    build: 
+      context: ./
+    container_name: 'denodo8.0'
+    restart: 'always'
+    ports:
+      - "9999:9999"
+      - "9996:9996"
+      - "9995:9995"
+      - "9090:9090"
+    links: 
+      - db      
+    volumes: 
+      - ./denodo-express-lic-8_0-202105.lic:/opt/denodo/conf/denodo.lic
+      - ./mysql-connector-java-5.1.49.jar:/opt/denodo/extensions/thirdparty/lib/mysql-connector-java-5.1.49.jar
+      - ./mysql-connector-java-5.1.49-bin.jar:/opt/denodo/extensions/thirdparty/lib/mysql-connector-java-5.1.49-bin.jar
+      - ./metadata_database_configuration.properties:/opt/denodo/bin/metadata_database_configuration.properties
+   
